@@ -1,0 +1,18 @@
+{
+  "author": "Nicolas Chambrier <naholyr@gmail.com> (http://naholyr.fr)",
+  "name": "drupal-notifications",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/naholyr/node-drupal-notifications.git"
+  },
+  "main": "app.js",
+  "dependencies": {
+    "socket.io": "~0.9.6"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
