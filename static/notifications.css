@@ -1,0 +1,35 @@
+.notifications-container {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    border-radius: 5px;
+    border: 4px solid #ccc;
+    background: #eee;
+    opacity: 0.8;
+    min-height: 50px;
+    min-width: 200px;
+    -webkit-transition: left 1s ease-in-out;
+    padding: 10px;
+}
+.notifications-container-hidden {
+    left: -1000px;
+}
+
+.notifications-item {
+    overflow: hidden;
+    height: 1.5em;
+    -webkit-transition: height 0.5s ease-in;
+}
+.notifications-item-hidden {
+    height: 0px;
+}
+
+.notifications-item-level-info {
+    color: blue;
+}
+.notifications-item-level-error {
+    color: red;
+}
+.notifications-item-level-success {
+    color: green;
+}
