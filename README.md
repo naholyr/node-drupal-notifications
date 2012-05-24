@@ -7,6 +7,11 @@ Node.JS+Socket.IO server and client to allow realtime notifications (demoed with
 
 If you put it in production, anyone who can POST to your IP (so, anyone) could simply add a notification that grabs user's cookie, and trick the WebSocket client to push back this information to his browsers. You really want this to happen ?
 
+Sample output
+-------------
+
+![](http://github.com/naholyr/node-drupal-notifications/raw/master/screenshot.png)
+
 Spread new notification
 -----------------------
 
@@ -42,9 +47,27 @@ Insert script:
 
 ```html
 <script src="http://server/notifications.js"></script>
-<script>
-  notifications.display(USER_ID, [ USER_ROLES ]);
-</script>
 ```
 
+Then in your JS call `notifications.display` to start dispatching notifications on-screen:
+
+```javascript
+notifications.display(USER_ID, USER_ROLES);
+```
+
+You will display all (and only) notifications sent to your user id or your roles.
+
 Client API will be enhanced to provide events to handle errors, received notifications, etc. But not today.
+
+Security
+--------
+
+There is no security, every possible flaw you can think of is here.
+
+* There is no way to prevent a user to add any role or declare any user id and therefore receive notifications not related to his status.
+* There is no escaping, anywhere, just brutal typecasts.
+* The worst is the absence of escaping in notifications message.
+
+> WTF dude, the time you took to write this, you could have fixed that mess !
+
+True, but it would add code, and may make the demonstration less clear. Just live with that.
