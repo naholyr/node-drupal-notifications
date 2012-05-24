@@ -9,7 +9,9 @@
     background: #fff;
     opacity: 0.8;
     min-height: 50px;
-    min-width: 200px;
+    min-width: 500px;
+    max-height: 400px;
+    overflow: auto;
     -webkit-transition: left 1s ease-in-out;
     margin: 0;
     padding: 0;
