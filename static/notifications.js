@@ -150,13 +150,9 @@
                 if (disconnected) addNotification("Successfully reconnected to notification service", 'success', options.notificationTimeout);
                 disconnected = false;
                 // Send user_id
-                socket.emit('roles', roles, function (roles) {
-                    console.log('ROLES', roles); // TODO ?
-                });
+                socket.emit('roles', roles);
                 // Send user roles
-                socket.emit('user_id', user_id, function (user_id) {
-                    console.log('USER ID', user_id); // TODO ?
-                });
+                socket.emit('user_id', user_id);
             });
             // Receive error
             socket.on('error', function (err) {

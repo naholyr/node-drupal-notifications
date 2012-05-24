@@ -124,12 +124,12 @@ io.sockets.on('connection', function (socket) {
         if (typeof user_id !== 'number') user_id = parseInt(user_id, 10);
         var onError = function (err) {
             socket.emit('error', err.toString());
-            cb();
+            if (cb) cb();
         };
         var setId = function () {
             socket.set('user_id', user_id, function (err) {
                 if (err) return onError(err);
-                socket.join('USER:' + user_id, function () { cb(user_id) });
+                socket.join('USER:' + user_id, function () { if (cb) cb(user_id) });
             });
         };
         socket.get('user_id', function (err, currentId) {
@@ -146,7 +146,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('roles', function (roles, cb) {
         var onError = function (err) {
             socket.emit('error', String(err));
-            cb();
+            if (cb) cb();
         };
         // Batch operation on roles
         var onRoles = function (roles, what, fn) {
@@ -164,7 +164,7 @@ io.sockets.on('connection', function (socket) {
             roles = roles.map(function (r) { return String(r) }).filter(function (v) { return v.length > 0 });
             socket.set('roles', roles, function (err) {
                 if (err) return onError(err);
-                onRoles(roles, 'join', function () { cb(roles) });
+                onRoles(roles, 'join', function () { if (cb) cb(roles) });
             });
         };
         // Unsubscribe old roles
