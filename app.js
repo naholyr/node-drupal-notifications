@@ -89,13 +89,13 @@ var serveStatic = (function () {
         function serve (content) {
             // TODO client cache headers
             res.writeHead(200, { "Content-Type": mime.lookup(req.url), "Content-Length": content.length });
-            res.end(content.toString());
+            res.end(content);
         }
         var path = __dirname + '/static' + req.url.replace(/\.\.\//g, '');
         fs.stat(path, function (err, stat) {
             if (!err) {
                 if (!cache[path] || cache[path].mtime < stat.mtime) {
-                    fs.readFile(path, function (err, content) {
+                    fs.readFile(path, { "encoding": "binary" }, function (err, content) {
                         // In /notifications.js, customize server address
                         if (req.url === '/notifications.js') {
                             var address = 'http://' + req.headers.host;
