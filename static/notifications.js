@@ -94,6 +94,22 @@
         return container;
     }
 
+    // Standard formatting date
+    function formatDate (date) {
+        var pad = function (n) {
+            n = String(n);
+            while (n.length < 2) n = '0' + n;
+            return n;
+        };
+        var YYYY = date.getFullYear();
+        var MM = pad(date.getMonth() + 1);
+        var DD = pad(date.getDate());
+        var hh = pad(date.getHours());
+        var mm = pad(date.getMinutes());
+        var ss = pad(date.getSeconds());
+        return YYYY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm + ':' + ss;
+    }
+
     // Add auto-disappearing notification DOM node
     function addNotification (notification, level, timeout) {
         // Format notification
@@ -107,25 +123,27 @@
         }
         // Insert DOM
         var container = addContainer();
-        var main = newDOMNode('div', '', "notifications-item notifications-item-hidden notifications-item-level-" + level);
-        main.appendChild(newDOMNode('small', notification.date.toString(), "notifications-item-date"));
-        main.appendChild(newDOMNode('span', notification.message, "notifications-item-message"));
+        var item = newDOMNode('div', '', "notifications-item notifications-item-hidden notifications-item-level-" + level);
+        var content = newDOMNode('div', '', "notifications-item-content");
+        content.appendChild(newDOMNode('small', formatDate(notification.date), "notifications-item-date"));
+        content.appendChild(newDOMNode('span', notification.message, "notifications-item-message"));
+        item.appendChild(content);
         // Append notification DOM
         if (container.childNodes.length === 0) {
-            container.appendChild(main);
+            container.appendChild(item);
         } else {
-            container.insertBefore(main, container.childNodes[0]);
+            container.insertBefore(item, container.childNodes[0]);
         }
-        setTimeout(function () { removeClassName(main, 'notifications-item-hidden') }, 20);
+        setTimeout(function () { removeClassName(item, 'notifications-item-hidden') }, 20);
         // Display container
         removeClassName(container, 'notifications-container-hidden');
         container.style.display = 'block';
         // Automatically remove child
         setTimeout(function () {
             // Hide child, then remove it a few seconds later
-            addClassName(main, 'notifications-item-hidden');
+            addClassName(item, 'notifications-item-hidden');
             setTimeout(function () {
-                container.removeChild(main);
+                container.removeChild(item);
                 // Hide container if no remaining notification
                 setTimeout(function () {
                     if (container.childNodes.length === 0) {
