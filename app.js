@@ -3,6 +3,7 @@ var http = require('http');
 var io = require('socket.io');
 var fs = require('fs');
 var mime = require('mime');
+var async = require('async');
 
 // HTTP Server
 var app = http.createServer(onRequest);
@@ -59,7 +60,8 @@ function newNotification (req, res) {
         // Message
         notification.message = notification.message.toString();
         // Spread notification
-        io.sockets.emit('notification', notification);
+        notification.roles.forEach(function (role) { io.sockets.in('ROLE:' + role).emit('notification', notification); });
+        notification.users.forEach(function (user) { io.sockets.in('USER:' + user).emit('notification', notification); });
         // Respond to client
         content = JSON.stringify(notification) + "\n";
         res.writeHead(201, { "Content-Type": "application/json", "Content-Length": content.length });
@@ -85,6 +87,7 @@ var serveStatic = (function () {
     var cache = {};
     return function serveStatic (req, res) {
         function serve (content) {
+            // TODO client cache headers
             res.writeHead(200, { "Content-Type": mime.lookup(req.url), "Content-Length": content.length });
             res.end(content.toString());
         }
@@ -115,20 +118,61 @@ var serveStatic = (function () {
 
 // WebSockets: spread notifications
 io.sockets.on('connection', function (socket) {
+
+    // Subscribe client to USER:* room
     socket.on('user_id', function (user_id, cb) {
         if (typeof user_id !== 'number') user_id = parseInt(user_id, 10);
-        socket.set('user_id', user_id, function (err) {
-            if (err) socket.emit('error', err.toString());
-            cb(err ? null : user_id);
+        var onError = function (err) {
+            socket.emit('error', err.toString());
+            cb();
+        };
+        var setId = function () {
+            socket.set('user_id', user_id, function (err) {
+                if (err) return onError(err);
+                socket.join('USER:' + user_id, function () { cb(user_id) });
+            });
+        };
+        socket.get('user_id', function (err, currentId) {
+            if (err) return onError(err);
+            if (currentId) {
+                socket.leave('USER:' + currentId, setId);
+            } else {
+                setId();
+            }
         });
     });
+
+    // Subscribe client to ROLE:* rooms
     socket.on('roles', function (roles, cb) {
-        if (!Array.isArray(roles)) roles = [roles];
-        roles = roles.map(function (r) { return r && r.toString() }).filter(function (v) { return v });
-        socket.set('roles', roles, function (err) {
-            if (err) socket.emit('error', err.toString());
-            cb(err ? null : roles);
+        var onError = function (err) {
+            socket.emit('error', String(err));
+            cb();
+        };
+        // Batch operation on roles
+        var onRoles = function (roles, what, fn) {
+            if (!roles || roles.length === 0) return fn();
+            async.parallel(roles.map(function (role) {
+                return function (cb) { socket[what]('ROLE:' + role, cb) };
+            }), function (err) {
+                if (err) return onError(err);
+                fn();
+            });
+        };
+        // Subscribe new roles
+        var setRoles = function () {
+            if (!Array.isArray(roles)) roles = [roles];
+            roles = roles.map(function (r) { return String(r) }).filter(function (v) { return v.length > 0 });
+            socket.set('roles', roles, function (err) {
+                if (err) return onError(err);
+                onRoles(roles, 'join', function () { cb(roles) });
+            });
+        };
+        // Unsubscribe old roles
+        socket.get('roles', function (err, currentRoles) {
+            if (err) return onError(err);
+            onRoles(currentRoles, 'leave', setRoles);
         });
+
     });
 });
 
