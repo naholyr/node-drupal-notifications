@@ -1,6 +1,6 @@
 .notifications-container {
     font-size: 16px;
-    position: absolute;
+    position: fixed;
     top: 0px;
     left: 0px;
     border: 4px solid #ccc;
@@ -16,12 +16,7 @@
     margin: 0;
     padding: 0;
 }
-body.toolbar .notifications-container {
-    top: 30px;
-}
-.notifications-container-hidden {
-    left: -1000px;
-}
+.notifications-container-hidden { left: -1000px }
 
 .notifications-item {
     overflow: hidden;
@@ -50,3 +45,7 @@ body.toolbar .notifications-container {
     font-family: monospace;
     padding-right: 1em;
 }
+
+/* Drupal */
+body.toolbar .notifications-container { top: 30px }
+body.toolbar-drawer .notifications-container { top: 65px }
