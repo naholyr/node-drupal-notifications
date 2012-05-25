@@ -123,7 +123,17 @@
         }
         // Insert DOM
         var container = addContainer();
-        var item = newDOMNode('div', '', "notifications-item notifications-item-hidden notifications-item-level-" + level);
+        // Insert only if not another is already present with same ID
+        // This can happend when you join two rooms receiving the same notification
+        var options = { "class": "notifications-item notifications-item-hidden notifications-item-level-" + level };
+        if (notification.id) {
+            if (document.getElementById("notifications-item-" + notification.id)) {
+                // Already received this notification
+                return false;
+            }
+            options.id = "notifications-item-" + notification.id;
+        }
+        var item = newDOMNode('div', '', options);
         var content = newDOMNode('div', '', "notifications-item-content");
         content.appendChild(newDOMNode('small', formatDate(notification.date), "notifications-item-date"));
         var message = newDOMNode('span', '', "notifications-item-message");
@@ -154,6 +164,7 @@
                 }, 20);
             }, 2000);
         }, timeout || 30000);
+        return true;
     }
 
     // Work with WebSocket and display notifications

@@ -4,6 +4,7 @@ var io = require('socket.io');
 var fs = require('fs');
 var mime = require('mime');
 var async = require('async');
+var uuid = require('node-uuid');
 
 // HTTP Server
 var app = http.createServer(onRequest);
@@ -60,6 +61,7 @@ function newNotification (req, res) {
         // Message
         notification.message = notification.message.toString();
         // Spread notification
+        notification.id = uuid();
         notification.roles.forEach(function (role) { io.sockets.in('ROLE:' + role).emit('notification', notification); });
         notification.users.forEach(function (user) { io.sockets.in('USER:' + user).emit('notification', notification); });
         // Respond to client
