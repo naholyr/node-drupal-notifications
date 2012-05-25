@@ -126,7 +126,9 @@
         var item = newDOMNode('div', '', "notifications-item notifications-item-hidden notifications-item-level-" + level);
         var content = newDOMNode('div', '', "notifications-item-content");
         content.appendChild(newDOMNode('small', formatDate(notification.date), "notifications-item-date"));
-        content.appendChild(newDOMNode('span', notification.message, "notifications-item-message"));
+        var message = newDOMNode('span', '', "notifications-item-message");
+        message.innerHTML = notification.message;
+        content.appendChild(message);
         item.appendChild(content);
         // Append notification DOM
         if (container.childNodes.length === 0) {
