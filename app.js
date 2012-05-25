@@ -91,7 +91,7 @@ var serveStatic = (function () {
             res.writeHead(200, { "Content-Type": mime.lookup(req.url), "Content-Length": content.length });
             res.end(content);
         }
-        var path = __dirname + '/static' + req.url.replace(/\.\.\//g, '');
+        var path = __dirname + '/static' + req.url.replace(/\.\.\//g, '').replace(/\?.*/, '');
         fs.stat(path, function (err, stat) {
             if (!err) {
                 if (!cache[path] || cache[path].mtime < stat.mtime) {
