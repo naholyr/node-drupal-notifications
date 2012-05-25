@@ -16,6 +16,9 @@
     margin: 0;
     padding: 0;
 }
+body.toolbar .notifications-container {
+    top: 30px;
+}
 .notifications-container-hidden {
     left: -1000px;
 }
