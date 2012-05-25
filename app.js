@@ -86,12 +86,12 @@ function error404 (res, message) {
 var serveStatic = (function () {
     var cache = {};
     return function serveStatic (req, res) {
+        var path = __dirname + '/static' + req.url.replace(/\.\.\//g, '').replace(/\?.*/, '');
         function serve (content) {
             // TODO client cache headers
-            res.writeHead(200, { "Content-Type": mime.lookup(req.url), "Content-Length": content.length });
+            res.writeHead(200, { "Content-Type": mime.lookup(path), "Content-Length": content.length });
             res.end(content);
         }
-        var path = __dirname + '/static' + req.url.replace(/\.\.\//g, '').replace(/\?.*/, '');
         fs.stat(path, function (err, stat) {
             if (!err) {
                 if (!cache[path] || cache[path].mtime < stat.mtime) {
