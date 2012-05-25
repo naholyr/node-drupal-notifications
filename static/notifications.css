@@ -12,7 +12,11 @@
     min-width: 500px;
     max-height: 400px;
     overflow: auto;
+    -moz-transition: left 1s ease-in-out;
     -webkit-transition: left 1s ease-in-out;
+    -o-transition: left 1s ease-in-out;
+    -ms-transition: left 1s ease-in-out;
+    transition: left 1s ease-in-out;
     margin: 0;
     padding: 0;
 }
@@ -21,7 +25,11 @@
 .notifications-item {
     overflow: hidden;
     height: 2em;
+    -moz-transition: height 0.5s ease-in;
     -webkit-transition: height 0.5s ease-in;
+    -o-transition: height 0.5s ease-in;
+    -ms-transition: height 0.5s ease-in;
+    transition: height 0.5s ease-in;
     border-top: 1px solid #ccc;
     margin: 0;
     padding: 0;
