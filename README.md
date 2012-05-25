@@ -59,6 +59,27 @@ You will display all (and only) notifications sent to your user id or your roles
 
 Client API will be enhanced to provide events to handle errors, received notifications, etc. But not today.
 
+Server configuration
+--------------------
+
+You can configure port using env variable `NODE_PORT`:
+
+```sh
+# Start server on localhost:3000
+NODE_PORT=3000 node app.js
+```
+
+Client configuration
+--------------------
+
+`notifications.display` accepts an options hash as third argument. It accepts following options:
+
+* `notificationTimeout` (default = 30000): time before removing notifications.
+* `socketIOServer` (default = app's address): URL to Socket.IO WebSocket server.
+* `socketIOJs` (default = `socketIOServer` + `/socket.io/socket.io.js`): full URL to Socket.IO client library `socket.io.js`.
+* `staticServer` (default = app's address): URL to static files server.
+* `css` (default = `staticServer` + `/notifications.css`):  full URL to stylesheet.
+
 Security
 --------
 
